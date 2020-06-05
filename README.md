@@ -14,9 +14,9 @@ Anything found in the `user` folder is meant for the users (merchants, buyers, a
 
 The decryption can be performed by a PHP file residing in the `user` folder, which is accessible via a URL. If the decryption file is named ‘decryption.php’, the URL will look like this:
 
-https://{the-marketplace}.arcadier.io/users/plugins/{package_ID_of_plugin}/decryption.php
+> {the-marketplace}.arcadier.io/users/plugins/{package_ID_of_plugin}/decryption.php
 
-Note: this can be easily customised/shortened using our [Custom URL API](https://apiv2.arcadier.com/?version=latest#4b934939-cd65-4ed0-aee9-3b15de47904b) 
+Note: this can be easily customised/shortened using our [Custom URL API](https://apiv2.arcadier.com/?version=latest#4b934939-cd65-4ed0-aee9-3b15de47904b).
 
 ### Installing JWT via composer
 1. Clone this repository
