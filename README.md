@@ -21,8 +21,9 @@ Note: this can be easily customised/shortened using our [Custom URL API](https:/
 ### Installing JWT via composer
 1. Clone this repository
 The required dependencies and versions for JWT are pre defined in `composer.json` and `composer.lock`
-<br>
+
 2. Run the following command in your directory containing the cloned repository.
+
 ```
 php composer.phar install
 ```
