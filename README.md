@@ -64,9 +64,10 @@ php composer.phar install
 
 3. Simulate Arcadier receiving and decrypting the JWT token [decryption.php]() by calling this link: `https://{marketplace-name}.arcadier.io/user/plugins/{plug-in-ID}/decryption.php?returnUrl={__}&ssoToken={__}`
 
-        where `returnUrl` is the URL slug of the Arcadier page you want the user to be redirected to. Example:
 
-        * Item Detail Page: `returnUrl=/User/Item/Detail/Shoe/66056`
-        * User Settings Page: `returnUrl=/user/marketplace/user-settings`
+    where `returnUrl` is the URL slug of the Arcadier page you want the user to be redirected to. Example:
+
+    * Item Detail Page: `returnUrl=/User/Item/Detail/Shoe/66056`
+    * User Settings Page: `returnUrl=/user/marketplace/user-settings`
     
-    Successfully completing all the steps above will log John Smith on to Arcadier and redirect him to the specified `returnUrl`.
+Successfully completing all the steps above will log John Smith on to Arcadier and redirect him to the specified `returnUrl`.
