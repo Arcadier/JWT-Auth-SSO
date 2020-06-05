@@ -1,0 +1,1 @@
+// write any script you want to run for the authenticated user after successful redirection. See decryption.php.
