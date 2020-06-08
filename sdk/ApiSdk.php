@@ -96,6 +96,17 @@ class ApiSdk
         return $userInfo;
     }
 
+    public function upgradeUserRole($id, $role)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+
+        $url = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/users/' . $id . '/roles/' . $role;
+        $userRole = $this->callAPI("PUT", $this->adminToken['access_token'], $url, null);
+        return $userRole;
+    }
+
     public function getAdminId()
     {
         if ($this->adminToken == null) {
