@@ -73,6 +73,8 @@ class ApiSdk
         return $customFieldPrefix;
     }
 
+    ///////////////////////////////////////////////////// BEGIN USER APIs /////////////////////////////////////////////////////
+
     public function getUserInfo($id, $include)
     {
         if ($this->adminToken == null) {
@@ -106,6 +108,67 @@ class ApiSdk
         $userRole = $this->callAPI("PUT", $this->adminToken['access_token'], $url, null);
         return $userRole;
     }
+
+    public function deleteUser($id)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+
+        $url = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/users/' . $id;
+        $deletedUser = $this->callAPI("DELETE", $this->adminToken['access_token'], $url, null);
+        return $deletedUser;
+    }
+
+    ///////////////////////////////////////////////////// END USER APIs /////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////// BEGIN ADDRESS APIs /////////////////////////////////////////////////////
+    public function getUserAddress($id,  $addressID)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+
+        $url = $this->baseUrl . '/api/v2/users/' . $id . '/addresses/' . $addressID;
+        $newAddress = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
+        return $newAddress;
+    }
+    
+    public function createUserAddress($id, $data)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+
+        $url = $this->baseUrl . '/api/v2/users/' . $id . '/addresses/';
+        $newAddress = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
+        return $newAddress;
+    }
+
+    public function updateUserAddress($id, $addressID, $data)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+
+        $url = $this->baseUrl . '/api/v2/users/' . $id . '/addresses/' . $addressID;
+        $updatedAddress = $this->callAPI("PUT", $this->adminToken['access_token'], $url, $data);
+        return $updatedAddress;
+    }
+
+    public function deleteUserAddress($id, $addressID)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+
+        $url = $this->baseUrl . '/api/v2/users/' . $id . '/addresses/' . $addressID;
+        $deletedAddress = $this->callAPI("DELETE", $this->adminToken['access_token'], $url, null);
+        return $deletedAddress;
+    }
+
+
+    ///////////////////////////////////////////////////// BEGIN ADDRESS APIs /////////////////////////////////////////////////////
 
     public function getAdminId()
     {
