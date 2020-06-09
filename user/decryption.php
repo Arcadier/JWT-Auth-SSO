@@ -25,7 +25,7 @@ $jwt = Load::jwe($token)               // We want to load and decrypt the token 
     ->aud($baseUrl)                    // Registered claim. Should be the same as what was defined at encryption
     ->iss('URL of External platform')  // Registered claim. Should be the same as what was defined at encryption
     ->sub('11111')                     // Registered claim. Should be the same as the one defined at encryption
-    ->jti('11111')                     // Registered claim. Should be the same as the one defined at encryption, optional
+    ->jti('11111')                     // Registered claim. Should be the same as the one defined at encryption
     ->key($jwk)                        // Key used to decrypt the token
     ->run()                            // Go!
 ;
