@@ -4,6 +4,7 @@ require_once '../admin/admin_token.php';
 class ApiSdk
 {
     private $adminToken = '';
+    private $merchantToken = ''
     private $baseUrl    = '';
     public function __construct()
     {
@@ -168,7 +169,7 @@ class ApiSdk
     }
 
 
-    ///////////////////////////////////////////////////// BEGIN ADDRESS APIs /////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////// END ADDRESS APIs /////////////////////////////////////////////////////
 
     public function getAdminId()
     {
@@ -176,6 +177,23 @@ class ApiSdk
             $this->adminToken = getAdminToken();
         }
         return $this->adminToken['UserId'];
+    }
+
+    function getMerchantToken($username, $password) 
+    {
+        $marketplace = $_COOKIE["marketplace"];
+        $protocol = $_COOKIE["protocol"];
+        $baseUrl = $protocol . '://' . $marketplace;
+        $url = $baseUrl . '/token';
+        $body = 'grant_type=client_credentials&client_id=' . $client_id . '&client_secret=' . $client_secret . '&scope=admin'
+                . '&username:' . $username . '&password:' . $password;
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        $result = curl_exec($curl);
+        curl_close($curl);
     }
 
     public function getItemInfo($id)
@@ -186,6 +204,101 @@ class ApiSdk
         $url      = $this->baseUrl . '/api/v2/items/' . $id;
         $itemInfo = $this->callAPI("GET", null, $url, null);
         return $itemInfo;
+    }
+
+    // For Creating an item and creating a listing
+    public function createItem($data, $merchantId) 
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/merchants/' . $merchantId. '/items';
+        $createdItem = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
+        return $createdItem;
+    }
+
+    public function editItem($data, $merchantId, $itemId) 
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/merchants/' . $merchantId. '/items/' . $itemId;
+        $editedItem = $this->callAPI("PUT", $this->adminToken['access_token'], $url, $data);
+        return $editedItem;
+    }
+
+    public function deleteItem($merchantId, $itemId) 
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/merchants/' . $merchantId. '/items/' . $itemId;
+        $deletedItem = $this->callAPI("DELETE", $this->adminToken['access_token'], $url, $data);
+        return $deletedItem;
+    }
+
+    public function getAllItems($sortParams) 
+    {
+        $url       = $this->baseUrl . '/api/v2/items/?' . $sortParams;
+        /* if ( isset($createdAscParam) ) {
+            $url .= $createdAscParam . "&"
+        };
+
+        if ( isset($updatedAscParam) ) {
+            $url .= $updatedAscParam . "&"
+        };
+
+        if ( isset($priceAscParam) ) {
+            $url .= $priceAscParam . "&"
+        };
+
+        if ( isset($keywordsParam) ) {
+            $url .= "keywords=" . $priceAscParam . "&"
+        }; 
+
+        if ( isset($nameParam) ) {
+            $url .= $nameParam . "&"
+        }; */
+        
+        $items = $this->callAPI("GET", $this->adminToken['access_token'], $url, $data);
+        return $items;
+    }
+
+    public function getAllItemsJsonFiltering($data) 
+    {
+        $url       = $this->baseUrl . '/api/v2/items';
+        $items = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
+        return $items;
+    }
+
+    public function getItemTags($filterParams) 
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/tags/?' . $filterParams;
+        $tags = $this->callAPI("GET", $this->adminToken['access_token'], $url, $data);
+        return $tags;
+    }
+
+    public function tagItem($data, $merchantId, $itemId) 
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/merchants/' . $merchantId . '/items/' . $itemId . '/tags'
+        $result = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
+        return $result;
+    }
+
+    public function deleteTags($data) 
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/tags'
+        $result = $this->callAPI("DELETE", $this->adminToken['access_token'], $url, $data);
+        return $result;
     }
 
     public function getOrderInfo($id, $buyerId)
