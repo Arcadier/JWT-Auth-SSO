@@ -1,1 +1,31 @@
-/* none required */
+/* ul.simplePlugin-list > li {
+    list-style: circle;
+    margin-left: 1rem;
+}
+
+ul.simplePlugin-list > li > h4,
+ul.simplePlugin-list > li > h3 {
+    display: inline;
+    font-weight: 1.5;
+}
+ */
+
+pre#item-list,
+pre#transaction-list {
+    background-color: #34495e;
+}
+.simplePlugin-string {
+    color: #fff;
+}
+.simplePlugin-number {
+    color: #59d9a4;
+}
+.simplePlugin-boolean {
+    color: #fff;
+}
+.simplePlugin-null {
+    color: #d64933;
+}
+.simplePlugin-key {
+    color: #dd5;
+}
