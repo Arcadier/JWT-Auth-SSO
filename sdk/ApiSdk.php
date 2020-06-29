@@ -196,6 +196,8 @@ class ApiSdk
         curl_close($curl);
     }
 
+    ///////////////////////////////////////////////////// BEGIN ITEM APIs /////////////////////////////////////////////////////
+
     public function getItemInfo($id)
     {
         if ($this->adminToken == null) {
@@ -204,37 +206,6 @@ class ApiSdk
         $url      = $this->baseUrl . '/api/v2/items/' . $id;
         $itemInfo = $this->callAPI("GET", null, $url, null);
         return $itemInfo;
-    }
-
-    // For Creating an item and creating a listing
-    public function createItem($data, $merchantId) 
-    {
-        if ($this->adminToken == null) {
-            $this->adminToken = getAdminToken();
-        }
-        $url       = $this->baseUrl . '/api/v2/merchants/' . $merchantId. '/items';
-        $createdItem = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
-        return $createdItem;
-    }
-
-    public function editItem($data, $merchantId, $itemId) 
-    {
-        if ($this->adminToken == null) {
-            $this->adminToken = getAdminToken();
-        }
-        $url       = $this->baseUrl . '/api/v2/merchants/' . $merchantId. '/items/' . $itemId;
-        $editedItem = $this->callAPI("PUT", $this->adminToken['access_token'], $url, $data);
-        return $editedItem;
-    }
-
-    public function deleteItem($merchantId, $itemId) 
-    {
-        if ($this->adminToken == null) {
-            $this->adminToken = getAdminToken();
-        }
-        $url       = $this->baseUrl . '/api/v2/merchants/' . $merchantId. '/items/' . $itemId;
-        $deletedItem = $this->callAPI("DELETE", $this->adminToken['access_token'], $url, $data);
-        return $deletedItem;
     }
 
     public function getAllItems($sortParams) 
@@ -271,6 +242,37 @@ class ApiSdk
         return $items;
     }
 
+    // For Creating an item and creating a listing
+    public function createItem($data, $merchantId) 
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/merchants/' . $merchantId. '/items';
+        $createdItem = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
+        return $createdItem;
+    }
+
+    public function editItem($data, $merchantId, $itemId) 
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/merchants/' . $merchantId. '/items/' . $itemId;
+        $editedItem = $this->callAPI("PUT", $this->adminToken['access_token'], $url, $data);
+        return $editedItem;
+    }
+
+    public function deleteItem($merchantId, $itemId) 
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/merchants/' . $merchantId. '/items/' . $itemId;
+        $deletedItem = $this->callAPI("DELETE", $this->adminToken['access_token'], $url, $data);
+        return $deletedItem;
+    }
+
     public function getItemTags($filterParams) 
     {
         if ($this->adminToken == null) {
@@ -300,6 +302,8 @@ class ApiSdk
         $result = $this->callAPI("DELETE", $this->adminToken['access_token'], $url, $data);
         return $result;
     }
+
+    ///////////////////////////////////////////////////// END ITEM APIs /////////////////////////////////////////////////////
 
     public function getOrderInfo($id, $buyerId)
     {
