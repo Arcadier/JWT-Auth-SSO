@@ -1,5 +1,6 @@
 <?php
-function getAdminToken() {
+function getAdminToken()
+{
     $marketplace = $_COOKIE["marketplace"];
     $protocol = $_COOKIE["protocol"];
     $baseUrl = $protocol . '://' . $marketplace;
@@ -14,3 +15,4 @@ function getAdminToken() {
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     $result = curl_exec($curl);
     curl_close($curl);
+}
