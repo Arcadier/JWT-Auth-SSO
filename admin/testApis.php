@@ -50,10 +50,10 @@ switch ($apiType) {
     case "edititem":
         $response = $sdk->editItem(
             [
-                "Name" => "Damask Roses",
+                "Name" => "abibas" . strval(rand()),
             ],
             "015bf8c9-5332-4717-a26f-b09f15692e4d",
-            "a3b37841-5011-44a8-ab92-9ad6bfe0acf4"
+            "8dfa6111-68eb-4aba-ae09-41a966996006"
         );
         echo json_encode($response);
         break;
@@ -63,7 +63,7 @@ switch ($apiType) {
                 "Scented", "Fragrant", "Musky", "Invigorating"
             ],
             "015bf8c9-5332-4717-a26f-b09f15692e4d",
-            "a3b37841-5011-44a8-ab92-9ad6bfe0acf4"
+            "8dfa6111-68eb-4aba-ae09-41a966996006"
         );
         echo json_encode($response);
         break;
@@ -79,16 +79,50 @@ switch ($apiType) {
         );
         echo json_encode($response);
         break;
-    case "deleteitem":
+    case substr($apiType, 0, 10) == "deleteitem":
         $response = $sdk->deleteItem(
             "015bf8c9-5332-4717-a26f-b09f15692e4d",
-            "a3b37841-5011-44a8-ab92-9ad6bfe0acf4"
+            substr($apiType, 11)
         );
         echo json_encode($response);
         break;
         //USERS TEST CASES
-    case "filter":
-        $response = $sdk->getAllItems("?maxPrice=45&pageSize=1&pageNumber=2");
+    case "getusers":
+        $response = $sdk->getAllUsers(null);
+        echo json_encode($response);
+        break;
+    case "getmerchants":
+        $response = $sdk->getAllUsers("?role=merchant");
+        echo json_encode($response);
+        break;
+    case "registeruser":
+        $response = $sdk->registerUser(
+            [
+                "Email" => "testuser1@gmail.com",
+                "Password" => "testuser1pw",
+                "ConfirmPassword" => "testuser1pw"
+            ]
+        );
+        echo json_encode($response);
+        break;
+    case "resetpassword":
+        $response = $sdk->resetPassword(
+            [
+                "UserId" => "2b4ea0dc-583d-4bb5-9c9a-0d2b2c7ab5e4",
+                "Action" => "token"
+            ]
+        );
+        echo json_encode($response);
+        break;
+    case substr($apiType, 0, 8) == "password":
+        $response = $sdk->updatePassword(
+            [
+                "Password" => "testuser1pw",
+                "ConfirmPassword" => "testuser1pw",
+                "ResetPasswordToken" => substr($apiType, 9),
+            ],
+            "2b4ea0dc-583d-4bb5-9c9a-0d2b2c7ab5e4"
+        );
         echo json_encode($response);
         break;
     default:
