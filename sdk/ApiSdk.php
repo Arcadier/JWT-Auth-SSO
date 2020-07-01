@@ -4,7 +4,7 @@ require_once '../admin/admin_token.php';
 class ApiSdk
 {
     private $adminToken = '';
-    private $merchantToken = '';
+    private $userToken = '';
     private $baseUrl    = '';
     public function __construct()
     {
@@ -146,15 +146,15 @@ class ApiSdk
         return $deletedUser;
     }
 
-    //is admin token able to get this?
+    //untested
     public function getSubMerchants($merchantId)
     {
         if ($this->adminToken == null) {
             $this->adminToken = getAdminToken();
         }
         $url = $this->baseUrl . '/api/v2/merchants/' . $merchantId . '/sub-merchants';
-        $userInfo = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
-        return $userInfo;
+        $submerchants = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
+        return $submerchants;
     }
 
     public function resetPassword($data)
@@ -163,8 +163,8 @@ class ApiSdk
             $this->adminToken = getAdminToken();
         }
         $url      = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/password';
-        $userInfo = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
-        return $userInfo;
+        $response = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
+        return $response;
     }
 
     public function updatePassword($data, $userId)
@@ -173,8 +173,8 @@ class ApiSdk
             $this->adminToken = getAdminToken();
         }
         $url      = $this->baseUrl . '/api/v2/users/' . $userId . '/password';
-        $userInfo = $this->callAPI("PUT", $this->adminToken['access_token'], $url, $data);
-        return $userInfo;
+        $response = $this->callAPI("PUT", $this->adminToken['access_token'], $url, $data);
+        return $response;
     }
 
     ///////////////////////////////////////////////////// END USER APIs /////////////////////////////////////////////////////
@@ -235,7 +235,7 @@ class ApiSdk
         return $this->adminToken['UserId'];
     }
 
-    function getMerchantToken($username, $password)
+    function getUserToken($username, $password)
     {
         $marketplace = $_COOKIE["marketplace"];
         $protocol = $_COOKIE["protocol"];
@@ -369,7 +369,58 @@ class ApiSdk
 
     ///////////////////////////////////////////////////// END ITEM APIs /////////////////////////////////////////////////////
 
-    public function getOrderInfo($id, $buyerId)
+    ///////////////////////////////////////////////////// BEGIN CART APIs /////////////////////////////////////////////////////
+
+    public function getCart($buyerId)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/users/' . $buyerId . '/carts';
+        $deletedItem = $this->callAPI("GET", $this->adminToken['access_token'], $url, false);
+        return $deletedItem;
+    }
+
+    public function addToCart($data, $buyerId, $username, $password)
+    {
+        if ($this->userToken == null) {
+            $this->userToken = $this->getUserToken($username, $password);
+        }
+        $url       = $this->baseUrl . '/api/v2/users/' . $buyerId . '/carts';
+        $cartItem = $this->callAPI("POST", $this->userToken['access_token'], $url, $data);
+        return $cartItem;
+    }
+
+    public function updateCartItem($data, $buyerId, $cartItemId, $username, $password, $usePutMethod)
+    {
+        if ($this->userToken == null) {
+            $this->userToken = $this->getUserToken($username, $password);
+        }
+        $url       = $this->baseUrl . '/api/v2/users/' . $buyerId . '/carts/' . $cartItemId;
+        if ($usePutMethod) {
+            $cartItem = $this->callAPI("PUT", $this->userToken['access_token'], $url, $data);
+        } else {
+            $cartItem = $this->callAPI("POST", $this->userToken['access_token'], $url, $data);
+        }
+
+        return $cartItem;
+    }
+
+    public function deleteCartItem($buyerId, $cartItemId, $username, $password)
+    {
+        if ($this->userToken == null) {
+            $this->userToken = $this->getUserToken($username, $password);
+        }
+        $url       = $this->baseUrl . '/api/v2/users/' . $buyerId . '/carts/' . $cartItemId;
+        $cartItem = $this->callAPI("DELETE", $this->userToken['access_token'], $url, null);
+        return $cartItem;
+    }
+
+    ///////////////////////////////////////////////////// END CART APIs /////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////// BEGIN ORDER APIs /////////////////////////////////////////////////////
+
+    public function getOrderInfoByOrderId($id, $buyerId)
     {
         if ($this->adminToken == null) {
             $this->adminToken = getAdminToken();
@@ -388,6 +439,60 @@ class ApiSdk
         $orderInfo = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
         return $orderInfo;
     }
+
+    public function getOrderHistory($merchantId)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/merchants/' . $merchantId . '/transactions';
+        $orderHistory = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
+        return $orderHistory;
+    }
+
+    public function getFilteredOrderHistory($merchantId, $pageSizeParam, $pageNumberParam)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/merchants/' . $merchantId . '/transactions/?';
+        if (isset($pageSizeParam)) {
+            $url .= "pageSize=" . $pageSizeParam . "&";
+        }
+
+        if (isset($pageNumberParam)) {
+            $url .= "pageNumber=" . $pageNumberParam . "&";
+        }
+        if (substr($url, -1) == "&") {
+            $url = substr($url, 0, -1);
+        }
+        $orderHistory = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
+        return $orderHistory;
+    }
+
+    public function getOrderInfoByInvoiceId($invoiceId, $merchantId)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/merchants/' . $merchantId . '/transactions/' . $invoiceId;
+        $orderInfo = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
+        return $orderInfo;
+    }
+
+    public function editOrder($data, $orderId, $merchantId)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/merchants/' . $merchantId . '/orders/' . $orderId;
+        $updatedOrder = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
+        return $updatedOrder;
+    }
+
+
+    ///////////////////////////////////////////////////// END ORDER APIs /////////////////////////////////////////////////////
+
 
     public function getTransactionInfo($invoiceNo)
     {

@@ -125,6 +125,68 @@ switch ($apiType) {
         );
         echo json_encode($response);
         break;
+        //CART TEST CASES
+    case "addtocart":
+        $response = $sdk->addToCart(
+            [
+                "ItemDetail" => [
+                    "ID" => "0751e830-b6fe-49d2-9f1b-89a90cafd858"
+                ],
+                "Quantity" => 5,
+                "CartItemType" => "delivery",
+                "ShippingMethod" => [
+                    "ID" => "e35cb2b3-c09a-448c-99a4-98999c83bf32"
+                ]
+            ],
+            "c33cfb0f-b665-42e9-bb04-84c723e7e65a",
+            "bryanchee@arcadier.com",
+            "bryanchee"
+        );
+        echo json_encode($response);
+        break;
+    case "getcart":
+        $response = $sdk->getCart(
+            "c33cfb0f-b665-42e9-bb04-84c723e7e65a"
+        );
+        echo json_encode($response);
+        break;
+    case "updatecartput":
+        $response = $sdk->updateCartItem(
+            [
+                "Quantity" => 5
+            ],
+            "c33cfb0f-b665-42e9-bb04-84c723e7e65a",
+            "1ef9d2d7-2106-4e68-894b-e6bfde96c13c",
+            "bryanchee@arcadier.com",
+            "bryanchee",
+            true
+        );
+        echo json_encode($response);
+        break;
+    case "updatecartpost":
+        $response = $sdk->updateCartItem(
+            [
+                "Quantity" => 5
+            ],
+            "c33cfb0f-b665-42e9-bb04-84c723e7e65a",
+            "1ef9d2d7-2106-4e68-894b-e6bfde96c13c",
+            "bryanchee@arcadier.com",
+            "bryanchee",
+            false
+        );
+        echo json_encode($response);
+        break;
+    case substr($apiType, 0, 8) == "password":
+        $response = $sdk->updatePassword(
+            [
+                "Password" => "testuser1pw",
+                "ConfirmPassword" => "testuser1pw",
+                "ResetPasswordToken" => substr($apiType, 9),
+            ],
+            "2b4ea0dc-583d-4bb5-9c9a-0d2b2c7ab5e4"
+        );
+        echo json_encode($response);
+        break;
     default:
         echo "Something went wrong ";
 }
