@@ -493,6 +493,8 @@ class ApiSdk
 
     ///////////////////////////////////////////////////// END ORDER APIs /////////////////////////////////////////////////////
 
+    ///////////////////////////////////////////////////// BEGIN TRANSACTION APIs /////////////////////////////////////////////////////
+
 
     public function getTransactionInfo($invoiceNo)
     {
@@ -513,6 +515,156 @@ class ApiSdk
         $invoiceInfo = $this->callAPI("PUT", $this->adminToken['access_token'], $url, $data);
         return $invoiceInfo;
     }
+
+    public function getAllTransactions()
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url         = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/transactions';
+        $allTransactions = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
+        return $allTransactions;
+    }
+
+    public function getAllFilteredTransactions($pageSizeParam, $pageNumberParam, $startDateParam, $endDateParam)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+
+        $url         = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/transactions';
+        if (isset($pageSizeParam)) {
+            $url .= "pageSize=" . $pageSizeParam . "&";
+        }
+
+        if (isset($pageNumberParam)) {
+            $url .= "pageNumber=" . $pageNumberParam . "&";
+        }
+
+        if (isset($startDateParam)) {
+            $url .= "startDate=" . $startDateParam . "&";
+        }
+
+        if (isset($endDateParam)) {
+            $url .= "endDate=" . $endDateParam . "&";
+        }
+        if (substr($url, -1) == "&") {
+            $url = substr($url, 0, -1);
+        }
+        $filteredTransactions = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
+        return $filteredTransactions;
+    }
+
+    //which authorisation token
+    public function getBuyerTransactions($buyerId)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url         = $this->baseUrl . '/api/v2/users/' . $buyerId . '/transactions';
+        $buyerTransactions = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
+        return $buyerTransactions;
+    }
+
+    ///////////////////////////////////////////////////// END TRANSACTION APIs /////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////// BEGIN CUSTOM TABLE APIs /////////////////////////////////////////////////////
+
+    public function getCustomTable($packageId, $tableName)
+    {
+        $url         = $this->baseUrl . '/api/v2/plugins/' . $packageId . '/custom-tables/' . $tableName;
+        $customTable = $this->callAPI("GET", null, $url, null);
+        return $customTable;
+    }
+
+    public function createRowEntry($packageId, $tableName, $data)
+    {
+        $url         = $this->baseUrl . '/api/v2/plugins/' . $packageId . '/custom-tables/' . $tableName . '/rows';
+        $response = $this->callAPI("POST", null, $url, $data);
+        return $response;
+    }
+
+    public function editRowEntry($packageId, $tableName, $rowId, $data)
+    {
+        $url         = $this->baseUrl . '/api/v2/plugins/' . $packageId . '/custom-tables/' . $tableName . '/rows/' . $rowId;
+        $response = $this->callAPI("PUT", null, $url, $data);
+        return $response;
+    }
+
+    public function deleteRowEntry($packageId, $tableName, $rowId, $adminIdData)
+    {
+        $url         = $this->baseUrl . '/api/v2/plugins/' . $packageId . '/custom-tables/' . $tableName . '/rows/' . $rowId;
+        $response = $this->callAPI("DELETE", null, $url, $adminIdData);
+        return $response;
+    }
+
+    public function searchTable($packageId, $tableName, $data)
+    {
+        $url         = $this->baseUrl . '/api/v2/plugins/' . $packageId . '/custom-tables/' . $tableName;
+        $rowEntries = $this->callAPI("POST", null, $url, $data);
+        return $rowEntries;
+    }
+    ///////////////////////////////////////////////////// END CUSTOM TABLE APIs /////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////// BEGIN CHECKOUT APIs /////////////////////////////////////////////////////
+
+    public function editBuyerCart($merchantId, $cartId, $data)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/merchants/' . $merchantId . '/carts/' . $cartId;
+        $response = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
+        return $response;
+    }
+
+    public function generateInvoice($buyerId, $data, $username, $password)
+    {
+        if ($this->adminToken == null) {
+            $this->userToken = $this->getUserToken($username, $password);
+        }
+        $url       = $this->baseUrl . '/api/v2/users/' . $buyerId . '/invoices/carts/';
+        $response = $this->callAPI("POST", $this->userToken['access_token'], $url, $data);
+        return $response;
+    }
+
+    //merchant or admin token?
+    public function updateMarketplaceTransaction($adminId, $invoiceId, $data)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/admins/' . $adminId . '/invoices/' . $invoiceId;
+        $response = $this->callAPI("PUT", $this->adminToken['access_token'], $url, $data);
+        return $response;
+    }
+
+    ///////////////////////////////////////////////////// END CHECKOUT APIs /////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////// BEGIN SHIPPING APIs /////////////////////////////////////////////////////
+
+    //admin or merchant token?
+    public function getMerchantShippingMethods($merchantId)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url = $this->baseUrl . '/api/v2/merchants/' . $merchantId . '/shipping-methods';
+        $methods = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
+        return $methods;
+    }
+
+    public function getDeliveryRates($adminId)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url = $this->baseUrl . '/api/v2/merchants/' . $adminId . '/shipping-methods';
+        $methods = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
+        return $methods;
+    }
+
+    ///////////////////////////////////////////////////// END SHIPPING APIs /////////////////////////////////////////////////////
 
     public function getEventTriggers()
     {
