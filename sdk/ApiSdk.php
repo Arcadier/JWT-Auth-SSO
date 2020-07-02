@@ -74,6 +74,33 @@ class ApiSdk
         return $customFieldPrefix;
     }
 
+    public function getAdminId()
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        return $this->adminToken['UserId'];
+    }
+
+    function getUserToken($username, $password)
+    {
+        $marketplace = $_COOKIE["marketplace"];
+        $protocol = $_COOKIE["protocol"];
+        $baseUrl = $protocol . '://' . $marketplace;
+        $client_id = '{client_id}';
+        $client_secret = '{client_secret}';
+        $url = $baseUrl . '/token';
+        $body = 'grant_type=client_credentials&client_id=' . $client_id . '&client_secret=' . $client_secret . '&scope=admin'
+            . '&username:' . $username . '&password:' . $password;;
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        $result = curl_exec($curl);
+        curl_close($curl);
+    }
+
     ///////////////////////////////////////////////////// BEGIN USER APIs /////////////////////////////////////////////////////
 
     // Url in documentation doesnt have this option
@@ -227,32 +254,6 @@ class ApiSdk
 
     ///////////////////////////////////////////////////// END ADDRESS APIs /////////////////////////////////////////////////////
 
-    public function getAdminId()
-    {
-        if ($this->adminToken == null) {
-            $this->adminToken = getAdminToken();
-        }
-        return $this->adminToken['UserId'];
-    }
-
-    function getUserToken($username, $password)
-    {
-        $marketplace = $_COOKIE["marketplace"];
-        $protocol = $_COOKIE["protocol"];
-        $baseUrl = $protocol . '://' . $marketplace;
-        $client_id = '{client_id}';
-        $client_secret = '{client_secret}';
-        $url = $baseUrl . '/token';
-        $body = 'grant_type=client_credentials&client_id=' . $client_id . '&client_secret=' . $client_secret . '&scope=admin'
-            . '&username:' . $username . '&password:' . $password;;
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_POST, 1);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        $result = curl_exec($curl);
-        curl_close($curl);
-    }
 
     ///////////////////////////////////////////////////// BEGIN ITEM APIs /////////////////////////////////////////////////////
 
@@ -695,6 +696,85 @@ class ApiSdk
     }
 
     ///////////////////////////////////////////////////// END SHIPPING APIs /////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////// BEGIN CATEGORY APIs /////////////////////////////////////////////////////
+
+    public function getCategories()
+    {
+        $url       = $this->baseUrl . '/api/v2/categories';
+        $categories = $this->callAPI("GET", null, $url, null);
+        return $categories;
+    }
+
+    //with adminid?
+    public function getCategoriesWithHierarchy()
+    {
+        $url       = $this->baseUrl . '/api/v2/categories/hierarchy';
+        $categories = $this->callAPI("GET", null, $url, null);
+        return $categories;
+    }
+
+    public function getFilteredCategories($adminId, $pageSizeParam, $pageNumberParam)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/admins/' . $adminId . '/categories/?';
+        if (isset($pageSizeParam)) {
+            $url .= "pageSize=" . $pageSizeParam . "&";
+        }
+
+        if (isset($pageNumberParam)) {
+            $url .= "pageNumber=" . $pageNumberParam . "&";
+        }
+        if (substr($url, -1) == "&") {
+            $url = substr($url, 0, -1);
+        }
+        $categories = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
+        return $categories;
+    }
+
+    public function createCategory($adminId, $data)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/admins/' . $adminId . '/categories';
+        $createdCategory = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
+        return $createdCategory;
+    }
+
+    public function deleteCategory($adminId, $categoryId)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/admins/' . $adminId . '/categories/' . $categoryId;
+        $deletedCategory = $this->callAPI("DELETE", $this->adminToken['access_token'], $url, null);
+        return $deletedCategory;
+    }
+
+    public function sortCategories($adminId, $data)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/admins/' . $adminId . '/categories';
+        $sortedCategories = $this->callAPI("PUT", $this->adminToken['access_token'], $url, $data);
+        return $sortedCategories;
+    }
+
+    public function updateCategory($adminId, $categoryId, $data)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url       = $this->baseUrl . '/api/v2/admins/' . $adminId . '/categories/' . $categoryId;
+        $updatedCategory = $this->callAPI("PUT", $this->adminToken['access_token'], $url, $data);
+        return $updatedCategory;
+    }
+
+    ///////////////////////////////////////////////////// END CATEGORY APIs /////////////////////////////////////////////////////
 
     public function getEventTriggers()
     {
