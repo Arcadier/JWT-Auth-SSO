@@ -660,8 +660,38 @@ class ApiSdk
             $this->adminToken = getAdminToken();
         }
         $url = $this->baseUrl . '/api/v2/merchants/' . $adminId . '/shipping-methods';
-        $methods = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
-        return $methods;
+        $rates = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
+        return $rates;
+    }
+
+    public function createShippingMethod($merchantId, $data)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url = $this->baseUrl . '/api/v2/merchants/' . $merchantId . '/shipping-methods';
+        $method = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
+        return $method;
+    }
+
+    public function updateShippingMethod($merchantId, $shippingMethodId, $data)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url = $this->baseUrl . '/api/v2/merchants/' . $merchantId . '/shipping-methods/' . $shippingMethodId;
+        $method = $this->callAPI("PUT", $this->adminToken['access_token'], $url, $data);
+        return $method;
+    }
+
+    public function deleteShippingMethod($merchantId, $shippingMethodId)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url = $this->baseUrl . '/api/v2/merchants/' . $merchantId . '/shipping-methods/' . $shippingMethodId;
+        $method = $this->callAPI("DELETE", $this->adminToken['access_token'], $url, null);
+        return $method;
     }
 
     ///////////////////////////////////////////////////// END SHIPPING APIs /////////////////////////////////////////////////////
