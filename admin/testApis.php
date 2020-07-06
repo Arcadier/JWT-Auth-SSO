@@ -239,6 +239,38 @@ switch ($keywords[0]) {
         );
         echo json_encode($response);
         break;
+        //Checkout test cases
+    case "editbuyercart":
+        $response = $sdk->editBuyerCart(
+            $keywords[1],
+            $keywords[2],
+            [
+                "Quantity" => 2,
+                "SubTotal" => 1,
+                "DiscountAmount" => 0.3
+            ]
+        );
+        echo json_encode($response);
+        break;
+    case "updatetransactionpayment":
+        $response = $sdk->updateMarketplaceTransaction(
+            $keywords[1],
+            [
+                "InvoiceNo" => $keywords[1],
+                "Payee" => [
+                    "ID" => $keywords[2]
+                ],
+                "Payer" => [
+                    "ID" => $keywords[3]
+                ],
+                "Order" => [
+                    "ID" => $keywords[4]
+                ],
+                "Status" => "Success"
+            ]
+        );
+        echo json_encode($response);
+        break;
     default:
         echo "Something went wrong ";
 }

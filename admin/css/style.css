@@ -16,3 +16,6 @@ pre#json-response-display {
 .simplePlugin-key {
     color: #dd5;
 }
+input#api-input {
+    width: 900px;
+}

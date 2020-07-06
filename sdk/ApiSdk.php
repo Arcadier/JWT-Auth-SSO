@@ -593,7 +593,6 @@ class ApiSdk
         return $response;
     }
 
-    //does it need adminid? only mentioned in the example but not the details
     public function deleteRowEntry($packageId, $tableName, $rowId)
     {
         $url         = $this->baseUrl . '/api/v2/plugins/' . $packageId . '/custom-tables/' . $tableName . '/rows/' . $rowId;
