@@ -6,8 +6,8 @@ $contentBodyJson = file_get_contents('php://input');
 $content = json_decode($contentBodyJson, true);
 
 $apiType = $content['apiType'];
-
-switch ($apiType) {
+$keywords = explode(":", $apiType);
+switch ($keywords[0]) {
         //ITEMS TEST CASES
     case "filter":
         $response = $sdk->getAllItems("?maxPrice=45&pageSize=1&pageNumber=2");
@@ -79,10 +79,10 @@ switch ($apiType) {
         );
         echo json_encode($response);
         break;
-    case substr($apiType, 0, 10) == "deleteitem":
+    case "deleteitem":
         $response = $sdk->deleteItem(
             "015bf8c9-5332-4717-a26f-b09f15692e4d",
-            substr($apiType, 11)
+            $keywords[1]
         );
         echo json_encode($response);
         break;
@@ -114,12 +114,12 @@ switch ($apiType) {
         );
         echo json_encode($response);
         break;
-    case substr($apiType, 0, 8) == "password":
+    case "password":
         $response = $sdk->updatePassword(
             [
                 "Password" => "testuser1pw",
                 "ConfirmPassword" => "testuser1pw",
-                "ResetPasswordToken" => substr($apiType, 9),
+                "ResetPasswordToken" => $keywords[1],
             ],
             "2b4ea0dc-583d-4bb5-9c9a-0d2b2c7ab5e4"
         );
@@ -176,14 +176,66 @@ switch ($apiType) {
         );
         echo json_encode($response);
         break;
-    case substr($apiType, 0, 8) == "password":
-        $response = $sdk->updatePassword(
+        //Transaction test cases
+    case "gettransactions":
+        $response = $sdk->getAllTransactions();
+        echo json_encode($response);
+        break;
+    case "getfilteredtransactions":
+        $response = $sdk->getAllFilteredTransactions(3, 1, $keywords[1], $keywords[2]);
+        echo json_encode($response);
+        break;
+    case "getbuyertransactions":
+        $response = $sdk->getBuyerTransactions($keywords[1]);
+        echo json_encode($response);
+        break;
+        //Custom Table test cases
+    case "getcustomtable":
+        $response = $sdk->getCustomTable($keywords[1], "TestTable");
+        echo json_encode($response);
+        break;
+    case "newrowentry":
+        $response = $sdk->createRowEntry(
+            $keywords[1],
+            "TestTable",
             [
-                "Password" => "testuser1pw",
-                "ConfirmPassword" => "testuser1pw",
-                "ResetPasswordToken" => substr($apiType, 9),
-            ],
-            "2b4ea0dc-583d-4bb5-9c9a-0d2b2c7ab5e4"
+                "Age" => 34,
+                "Gender" => "undecided",
+                "Name" => "TestUser"
+            ]
+        );
+        echo json_encode($response);
+        break;
+    case "editrowentry":
+        $response = $sdk->editRowEntry(
+            $keywords[1],
+            "TestTable",
+            $keywords[2],
+            [
+                "Age" => 42
+            ]
+        );
+        echo json_encode($response);
+        break;
+    case "searchcustomtable":
+        $response = $sdk->searchTable(
+            $keywords[1],
+            "TestTable",
+            array(
+                [
+                    "Name" => "Age",
+                    "Operator" => "equal",
+                    "Value" => "42"
+                ]
+            )
+        );
+        echo json_encode($response);
+        break;
+    case "deleterowentry":
+        $response = $sdk->deleteRowEntry(
+            $keywords[1],
+            "TestTable",
+            $keywords[2]
         );
         echo json_encode($response);
         break;

@@ -471,6 +471,7 @@ class ApiSdk
         return $orderHistory;
     }
 
+    //example response showing more than one order
     public function getOrderInfoByInvoiceId($invoiceId, $merchantId)
     {
         if ($this->adminToken == null) {
@@ -533,7 +534,7 @@ class ApiSdk
             $this->adminToken = getAdminToken();
         }
 
-        $url         = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/transactions';
+        $url         = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/transactions/?';
         if (isset($pageSizeParam)) {
             $url .= "pageSize=" . $pageSizeParam . "&";
         }
@@ -556,7 +557,7 @@ class ApiSdk
         return $filteredTransactions;
     }
 
-    //which authorisation token
+    //admin token doesnt work
     public function getBuyerTransactions($buyerId)
     {
         if ($this->adminToken == null) {
@@ -592,10 +593,11 @@ class ApiSdk
         return $response;
     }
 
-    public function deleteRowEntry($packageId, $tableName, $rowId, $adminIdData)
+    //does it need adminid? only mentioned in the example but not the details
+    public function deleteRowEntry($packageId, $tableName, $rowId)
     {
         $url         = $this->baseUrl . '/api/v2/plugins/' . $packageId . '/custom-tables/' . $tableName . '/rows/' . $rowId;
-        $response = $this->callAPI("DELETE", null, $url, $adminIdData);
+        $response = $this->callAPI("DELETE", null, $url, null);
         return $response;
     }
 
@@ -630,12 +632,12 @@ class ApiSdk
     }
 
     //merchant or admin token?
-    public function updateMarketplaceTransaction($adminId, $invoiceId, $data)
+    public function updateMarketplaceTransaction($invoiceId, $data)
     {
         if ($this->adminToken == null) {
             $this->adminToken = getAdminToken();
         }
-        $url       = $this->baseUrl . '/api/v2/admins/' . $adminId . '/invoices/' . $invoiceId;
+        $url       = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/invoices/' . $invoiceId;
         $response = $this->callAPI("PUT", $this->adminToken['access_token'], $url, $data);
         return $response;
     }
@@ -655,12 +657,12 @@ class ApiSdk
         return $methods;
     }
 
-    public function getDeliveryRates($adminId)
+    public function getDeliveryRates()
     {
         if ($this->adminToken == null) {
             $this->adminToken = getAdminToken();
         }
-        $url = $this->baseUrl . '/api/v2/merchants/' . $adminId . '/shipping-methods';
+        $url = $this->baseUrl . '/api/v2/merchants/' . $this->adminToken['UserId']  . '/shipping-methods';
         $rates = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
         return $rates;
     }
@@ -714,12 +716,12 @@ class ApiSdk
         return $categories;
     }
 
-    public function getFilteredCategories($adminId, $pageSizeParam, $pageNumberParam)
+    public function getFilteredCategories($pageSizeParam, $pageNumberParam)
     {
         if ($this->adminToken == null) {
             $this->adminToken = getAdminToken();
         }
-        $url       = $this->baseUrl . '/api/v2/admins/' . $adminId . '/categories/?';
+        $url       = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/categories/?';
         if (isset($pageSizeParam)) {
             $url .= "pageSize=" . $pageSizeParam . "&";
         }
@@ -734,42 +736,43 @@ class ApiSdk
         return $categories;
     }
 
-    public function createCategory($adminId, $data)
+    public function createCategory($data)
     {
         if ($this->adminToken == null) {
             $this->adminToken = getAdminToken();
         }
-        $url       = $this->baseUrl . '/api/v2/admins/' . $adminId . '/categories';
+        $url       = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/categories';
         $createdCategory = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
         return $createdCategory;
     }
 
-    public function deleteCategory($adminId, $categoryId)
+    public function deleteCategory($categoryId)
     {
         if ($this->adminToken == null) {
             $this->adminToken = getAdminToken();
         }
-        $url       = $this->baseUrl . '/api/v2/admins/' . $adminId . '/categories/' . $categoryId;
+        $url       = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/categories/' . $categoryId;
         $deletedCategory = $this->callAPI("DELETE", $this->adminToken['access_token'], $url, null);
         return $deletedCategory;
     }
 
-    public function sortCategories($adminId, $data)
+    public function sortCategories($data)
     {
         if ($this->adminToken == null) {
             $this->adminToken = getAdminToken();
         }
-        $url       = $this->baseUrl . '/api/v2/admins/' . $adminId . '/categories';
+        $url       = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/categories';
         $sortedCategories = $this->callAPI("PUT", $this->adminToken['access_token'], $url, $data);
         return $sortedCategories;
     }
 
-    public function updateCategory($adminId, $categoryId, $data)
+    //does it need id in data?
+    public function updateCategory($categoryId, $data)
     {
         if ($this->adminToken == null) {
             $this->adminToken = getAdminToken();
         }
-        $url       = $this->baseUrl . '/api/v2/admins/' . $adminId . '/categories/' . $categoryId;
+        $url       = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/categories/' . $categoryId;
         $updatedCategory = $this->callAPI("PUT", $this->adminToken['access_token'], $url, $data);
         return $updatedCategory;
     }
