@@ -87,11 +87,11 @@ class ApiSdk
         $marketplace = $_COOKIE["marketplace"];
         $protocol = $_COOKIE["protocol"];
         $baseUrl = $protocol . '://' . $marketplace;
-        $client_id = '{client_id}';
-        $client_secret = '{client_secret}';
+        $client_id = 'oqlbFvWBCDU9ZyMF4lndsZfPTKhHftr4KqA7TJa9';
+        $client_secret = 'C4LFJFDIWg_SOmp6zSycmZc21AlDf45ts1zFEBiussc1KOYO1RZ';
         $url = $baseUrl . '/token';
-        $body = 'grant_type=client_credentials&client_id=' . $client_id . '&client_secret=' . $client_secret . '&scope=admin'
-            . '&username:' . $username . '&password:' . $password;;
+        $body = 'grant_type=password&client_id=' . $client_id . '&client_secret=' . $client_secret . '&scope=admin'
+            . '&username=' . $username . '&password=' . $password;;
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
@@ -99,6 +99,7 @@ class ApiSdk
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         $result = curl_exec($curl);
         curl_close($curl);
+        return json_decode($result, true);
     }
 
     ///////////////////////////////////////////////////// BEGIN USER APIs /////////////////////////////////////////////////////
@@ -392,17 +393,13 @@ class ApiSdk
         return $cartItem;
     }
 
-    public function updateCartItem($data, $buyerId, $cartItemId, $username, $password, $usePutMethod)
+    public function updateCartItem($data, $buyerId, $cartItemId, $username, $password)
     {
         if ($this->userToken == null) {
             $this->userToken = $this->getUserToken($username, $password);
         }
         $url       = $this->baseUrl . '/api/v2/users/' . $buyerId . '/carts/' . $cartItemId;
-        if ($usePutMethod) {
-            $cartItem = $this->callAPI("PUT", $this->userToken['access_token'], $url, $data);
-        } else {
-            $cartItem = $this->callAPI("POST", $this->userToken['access_token'], $url, $data);
-        }
+        $cartItem = $this->callAPI("PUT", $this->userToken['access_token'], $url, $data);
 
         return $cartItem;
     }
@@ -482,7 +479,7 @@ class ApiSdk
         return $orderInfo;
     }
 
-    public function editOrder($data, $orderId, $merchantId)
+    public function editOrder($orderId, $merchantId, $data)
     {
         if ($this->adminToken == null) {
             $this->adminToken = getAdminToken();
@@ -557,14 +554,13 @@ class ApiSdk
         return $filteredTransactions;
     }
 
-    //admin token doesnt work
-    public function getBuyerTransactions($buyerId)
+    public function getBuyerTransactions($buyerId, $username, $password)
     {
-        if ($this->adminToken == null) {
-            $this->adminToken = getAdminToken();
+        if ($this->userToken == null) {
+            $this->userToken = $this->getUserToken($username, $password);
         }
         $url         = $this->baseUrl . '/api/v2/users/' . $buyerId . '/transactions';
-        $buyerTransactions = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
+        $buyerTransactions = $this->callAPI("GET", $this->userToken['access_token'], $url, null);
         return $buyerTransactions;
     }
 
@@ -622,7 +618,7 @@ class ApiSdk
 
     public function generateInvoice($buyerId, $data, $username, $password)
     {
-        if ($this->adminToken == null) {
+        if ($this->userToken == null) {
             $this->userToken = $this->getUserToken($username, $password);
         }
         $url       = $this->baseUrl . '/api/v2/users/' . $buyerId . '/invoices/carts/';
@@ -676,6 +672,7 @@ class ApiSdk
         return $method;
     }
 
+    //updates even though theres a code 500 exception
     public function updateShippingMethod($merchantId, $shippingMethodId, $data)
     {
         if ($this->adminToken == null) {
@@ -707,7 +704,6 @@ class ApiSdk
         return $categories;
     }
 
-    //with adminid?
     public function getCategoriesWithHierarchy()
     {
         $url       = $this->baseUrl . '/api/v2/categories/hierarchy';

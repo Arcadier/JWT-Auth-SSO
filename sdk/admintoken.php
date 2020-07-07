@@ -15,4 +15,5 @@ function getAdminToken()
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     $result = curl_exec($curl);
     curl_close($curl);
+    return json_decode($result, true);
 }

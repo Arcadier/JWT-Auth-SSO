@@ -130,15 +130,15 @@ switch ($keywords[0]) {
         $response = $sdk->addToCart(
             [
                 "ItemDetail" => [
-                    "ID" => "0751e830-b6fe-49d2-9f1b-89a90cafd858"
+                    "ID" => $keywords[1]
                 ],
                 "Quantity" => 5,
                 "CartItemType" => "delivery",
                 "ShippingMethod" => [
-                    "ID" => "e35cb2b3-c09a-448c-99a4-98999c83bf32"
+                    "ID" => $keywords[2]
                 ]
             ],
-            "c33cfb0f-b665-42e9-bb04-84c723e7e65a",
+            $keywords[3],
             "bryanchee@arcadier.com",
             "bryanchee"
         );
@@ -146,7 +146,7 @@ switch ($keywords[0]) {
         break;
     case "getcart":
         $response = $sdk->getCart(
-            "c33cfb0f-b665-42e9-bb04-84c723e7e65a"
+            $keywords[1]
         );
         echo json_encode($response);
         break;
@@ -155,21 +155,17 @@ switch ($keywords[0]) {
             [
                 "Quantity" => 5
             ],
-            "c33cfb0f-b665-42e9-bb04-84c723e7e65a",
-            "1ef9d2d7-2106-4e68-894b-e6bfde96c13c",
+            $keywords[1],
+            $keywords[2],
             "bryanchee@arcadier.com",
-            "bryanchee",
-            true
+            "bryanchee"
         );
         echo json_encode($response);
         break;
-    case "updatecartpost":
-        $response = $sdk->updateCartItem(
-            [
-                "Quantity" => 5
-            ],
-            "c33cfb0f-b665-42e9-bb04-84c723e7e65a",
-            "1ef9d2d7-2106-4e68-894b-e6bfde96c13c",
+    case "deletecartitem":
+        $response = $sdk->deleteCartItem(
+            $keywords[1],
+            $keywords[2],
             "bryanchee@arcadier.com",
             "bryanchee",
             false
@@ -186,7 +182,7 @@ switch ($keywords[0]) {
         echo json_encode($response);
         break;
     case "getbuyertransactions":
-        $response = $sdk->getBuyerTransactions($keywords[1]);
+        $response = $sdk->getBuyerTransactions($keywords[1], "bryanchee@arcadier.com", "bryanchee");
         echo json_encode($response);
         break;
         //Custom Table test cases
@@ -256,18 +252,149 @@ switch ($keywords[0]) {
         $response = $sdk->updateMarketplaceTransaction(
             $keywords[1],
             [
-                "InvoiceNo" => $keywords[1],
-                "Payee" => [
-                    "ID" => $keywords[2]
-                ],
-                "Payer" => [
-                    "ID" => $keywords[3]
-                ],
-                "Order" => [
-                    "ID" => $keywords[4]
-                ],
-                "Status" => "Success"
+                [
+                    "Payee" => [
+                        "ID" => $keywords[2]
+                    ],
+                    "Order" => [
+                        "ID" => $keywords[3]
+                    ],
+                    "Refunded" => false,
+                    "Status" => "Processing"
+                ]
             ]
+        );
+        echo json_encode($response);
+        break;
+    case "generateinvoice":
+        $response = $sdk->generateInvoice(
+            $keywords[1],
+            [
+                $keywords[2]
+            ],
+            "bryanchee@arcadier.com",
+            "bryanchee"
+        );
+        echo json_encode($response);
+        break;
+        //Shipping test cases
+    case "getshippingmethods":
+        $response = $sdk->getMerchantShippingMethods($keywords[1]);
+        echo json_encode($response);
+        break;
+    case "getdeliveryrates":
+        $response = $sdk->getDeliveryRates();
+        echo json_encode($response);
+        break;
+    case "createshippingmethod":
+        $response = $sdk->createShippingMethod(
+            $keywords[1],
+            [
+                "Courier" => "Snail Mail",
+                "Method" => "delivery",
+                "Price" => 5,
+                "CombinedPrice" => 3,
+                "CurrencyCode" => "SGD",
+                "Description" => "Snail Trail",
+                "CustomFields" => []
+            ]
+        );
+        echo json_encode($response);
+        break;
+    case "updateshippingmethod":
+        $response = $sdk->updateShippingMethod(
+            $keywords[1],
+            $keywords[2],
+            [
+                "Price" => 6,
+                "CombinedPrice" => 8
+            ]
+        );
+        echo json_encode($response);
+        break;
+    case "deleteshippingmethod":
+        $response = $sdk->deleteShippingMethod(
+            $keywords[1],
+            $keywords[2]
+        );
+        echo json_encode($response);
+        break;
+        //ORDER test cases
+    case "getallorders":
+        $response = $sdk->getOrderHistory($keywords[1]);
+        echo json_encode($response);
+        break;
+    case "getallordersfiltered":
+        $response = $sdk->getFilteredOrderHistory($keywords[1], 4, 2);
+        echo json_encode($response);
+        break;
+    case "getorder":
+        $response = $sdk->getOrderInfoByInvoiceId($keywords[1], $keywords[2]);
+        echo json_encode($response);
+        break;
+    case "editorderstatus":
+        $response = $sdk->editOrder(
+            $keywords[1],
+            $keywords[2],
+            [
+                "FulfilmentStatus" => "Acknowledged",
+                "PaymentStatus" => "Paid"
+            ]
+        );
+        echo json_encode($response);
+        break;
+        //Category test cases
+    case "getcategories":
+        $response = $sdk->getCategories();
+        echo json_encode($response);
+        break;
+    case "getcategoriesfiltered":
+        $response = $sdk->getFilteredCategories(3, 1);
+        echo json_encode($response);
+        break;
+    case "getcategorieshierarchy":
+        $response = $sdk->getCategoriesWithHierarchy();
+        echo json_encode($response);
+        break;
+    case "createcategory":
+        $response = $sdk->createCategory(
+            [
+                "Name" => "Synths",
+                "Description" => "Create your own music from your own room",
+                "SortOrder" => 0,
+                "Media" => [
+                    [
+                        "ID" => null,
+                        "MediaUrl" => "https =>//cdn.pixabay.com/photo/2016/12/14/12/09/violin-1906127_960_720.jpg"
+                    ]
+                ],
+                "ParentCategoryID" => $keywords[1],
+                "Level" => 1
+            ]
+        );
+        echo json_encode($response);
+        break;
+    case "sortcategories":
+        $response = $sdk->sortCategories(
+            [
+                $keywords[1],
+                $keywords[2]
+            ]
+        );
+        echo json_encode($response);
+        break;
+    case "updatecategory":
+        $response = $sdk->updateCategory(
+            $keywords[1],
+            [
+                "Name" => "Drums & Equipment"
+            ]
+        );
+        echo json_encode($response);
+        break;
+    case "deletecategory":
+        $response = $sdk->deleteCategory(
+            $keywords[1]
         );
         echo json_encode($response);
         break;
