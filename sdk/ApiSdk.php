@@ -974,7 +974,7 @@ class ApiSdk
         return $deletedPaymentGateway;
     }
 
-    public function deletePaymentAcceptanceMethods($merchantId, $methodId)
+    public function deletePaymentAcceptanceMethod($merchantId, $methodId)
     {
         if ($this->adminToken == null) {
             $this->adminToken = getAdminToken();
@@ -1117,7 +1117,7 @@ class ApiSdk
         return $panels;
     }
 
-    public function getPanelsById($panelId)
+    public function getPanelById($panelId)
     {
         $url  = $this->baseUrl . '/api/v2/panels/' . $panelId;
         $panel = $this->callAPI("GET", null, $url, null);

@@ -398,6 +398,200 @@ switch ($keywords[0]) {
         );
         echo json_encode($response);
         break;
+        //Marketplace test cases
+    case "updatemarketplaceinformation":
+        $response = $sdk->updateMarketplaceInfo(
+            [
+                "ID" => $keywords[1],
+                "CustomFields" => [
+                    [
+                        "Code" => $keywords[2],
+                        "Values" => [
+                            "2.0 kg"
+                        ]
+                    ]
+                ]
+            ]
+        );
+        echo json_encode($response);
+        break;
+        //Email test cases
+    case "sendemailinvoice":
+        $response = $sdk->sendEmailAfterGeneratingInvoice($keywords[1]);
+        echo json_encode($response);
+        break;
+        //Custom Field test cases
+    case "createcustomfield":
+        $response = $sdk->createCustomField(
+            [
+                "Name" => "Creating an CFD through API",
+                "IsMandatory" => true,
+                "SortOrder" => 5,
+                "DataInputType" => "textfield",
+                "ReferenceTable" => "Implementations",
+                "DataFieldType" => "string",
+                "IsSearchable" => true,
+                "IsSensitive" => true,
+                "Active" => true
+            ]
+        );
+        echo json_encode($response);
+        break;
+    case "getcustomfields":
+        $response = $sdk->getCustomFields();
+        echo json_encode($response);
+        break;
+    case "updatecustomfield":
+        $response = $sdk->updateCustomField(
+            $keywords[1],
+            [
+                "Code" => $keywords[1],
+                "Name" => "Previously owned",
+                "IsMandatory" => false,
+            ]
+        );
+        echo json_encode($response);
+        break;
+    case "getcustomfieldplugin":
+        $response = $sdk->getPluginCustomFields($keywords[1]);
+        echo json_encode($response);
+        break;
+    case "deletecustomfield":
+        $response = $sdk->deleteCustomField($keywords[1]);
+        echo json_encode($response);
+        break;
+        //Payment test cases
+    case "createpaymentgateway":
+        $response = $sdk->createPaymentGateway(
+            [
+                "Description" => "Test Payment Gateway 2",
+                "Gateway" => "Test",
+                "Logo" => [
+                    "ID" => "f9e001f5-53bf-4744-b73d-6e8d8734beed",
+                    "MediaUrl" => "https://d1aeri3ty3izns.cloudfront.net/media/6/67664/1200/preview.jpg"
+                ]
+            ]
+        );
+        echo json_encode($response);
+        break;
+    case "linkpaymentgateway":
+        $response = $sdk->linkPaymentGateway(
+            $keywords[1],
+            [
+                "PaymentGateway" => [
+                    "Code" => $keywords[2]
+                ],
+                "Verified" => true,
+                "Account" => "testaccount",
+                "ClientID" => "some hash",
+                "Active" => true,
+                "BankAccountNumber" => "4242424242424242"
+            ]
+        );
+        echo json_encode($response);
+        break;
+    case "getpaymentgateways":
+        $response = $sdk->getPaymentGateways();
+        echo json_encode($response);
+        break;
+    case "getpaymentmethods":
+        $response = $sdk->showPaymentAcceptanceMethods($keywords[1]);
+        echo json_encode($response);
+        break;
+    case "updatepaymentmethod":
+        $response = $sdk->updatePaymentMethod(
+            $keywords[1],
+            [
+                "Description" => "Updated Description",
+                "Gateway" => "Updated Gateway",
+                "Logo" => [
+                    "ID" => "40abc3db-241f-45a2-868d-dd798f6feb88",
+                    "MediaUrl" => "https://theme.zdassets.com/theme_assets/2008942/9566e69f67b1ee67fdfbcd79b1e580bdbbc98874.svg"
+                ]
+            ]
+        );
+        echo json_encode($response);
+        break;
+    case "deletepaymentmethod":
+        $response = $sdk->deletePaymentAcceptanceMethod($keywords[1], $keywords[2]);
+        echo json_encode($response);
+        break;
+    case "deletepaymentgateway":
+        $response = $sdk->deletePaymentGateway($keywords[1]);
+        echo json_encode($response);
+        break;
+        //Static test cases
+    case "getfulfilmentstatuses":
+        $response = $sdk->getFulfilmentStatuses();
+        echo json_encode($response);
+        break;
+    case "getcurrencies":
+        $response = $sdk->getCurrencies();
+        echo json_encode($response);
+        break;
+    case "getcountries":
+        $response = $sdk->getCountries();
+        echo json_encode($response);
+        break;
+    case "getorderstatuses":
+        $response = $sdk->getOrderStatuses();
+        echo json_encode($response);
+        break;
+    case "getpaymentstatuses":
+        $response = $sdk->getPaymentStatuses();
+        echo json_encode($response);
+        break;
+    case "gettimezones":
+        $response = $sdk->getTimezones();
+        echo json_encode($response);
+        break;
+        //Page test cases
+    case "getcontentpages":
+        $response = $sdk->getContentPages();
+        echo json_encode($response);
+        break;
+    case "getpagecontent":
+        $response = $sdk->getPageContent($keywords[1]);
+        echo json_encode($response);
+        break;
+    case "createcontentpage":
+        $response = $sdk->createContentPage(
+            [
+                "Title" => "Footer Link",
+                "Content" => "<div class=\"contact-main\">\r\n    <div class=\"contact-title\">   \r\n        <h1>strAdmin_Contact_ContactUs</h1>\r\n    </div>\r\n    <p>strAdmin_Contact_ContactDescription</p>\r\n    <p><img src=\"/Assets/img/contact_icon.svg\" alt=\"\" style=\"margin-bottom: 0.25em; vertical-align: middle;\" data-pin-nopin=\"true\">dbContactNo</p>\r\n    <p><img src=\"/Assets/img/email_icon.svg\" alt=\"\" style=\"margin-bottom: 0.25em; vertical-align: middle;\" data-pin-nopin=\"true\">\r\n    <a href=\"mailto:dbContactEmail\">dbContactEmail</a>\r\n    </p>\r\n</div>",
+                "ExternalURL" => "string",
+                "CreatedDateTime" => "2019-05-31T07:10:24.834Z",
+                "ModifiedDateTime" => "2019-05-31T07:10:24.834Z",
+                "Active" => true,
+                "Available" => 0,
+                "VisibleTo" => 1,
+                "Meta" => "This"
+            ]
+        );
+        echo json_encode($response);
+        break;
+    case "updatecontentpage":
+        $response = $sdk->editContentPage(
+            $keywords[1],
+            [
+                "Available" => 1,
+            ]
+        );
+        echo json_encode($response);
+        break;
+    case "deletecontentpage":
+        $response = $sdk->deleteContentPage($keywords[1]);
+        echo json_encode($response);
+        break;
+        //Panel test cases
+    case "getpanels":
+        $response = $sdk->getAllPanels();
+        echo json_encode($response);
+        break;
+    case "getpanel":
+        $response = $sdk->getPanelById($keywords[1]);
+        echo json_encode($response);
+        break;
     default:
         echo "Something went wrong ";
 }
