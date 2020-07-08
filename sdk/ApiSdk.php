@@ -468,7 +468,6 @@ class ApiSdk
         return $orderHistory;
     }
 
-    //example response showing more than one order
     public function getOrderInfoByInvoiceId($invoiceId, $merchantId)
     {
         if ($this->adminToken == null) {
@@ -774,6 +773,9 @@ class ApiSdk
 
     ///////////////////////////////////////////////////// END CATEGORY APIs /////////////////////////////////////////////////////
 
+    ///////////////////////////////////////////////////// BEGIN EVENT TRIGGER APIs /////////////////////////////////////////////////////
+
+
     public function getEventTriggers()
     {
         if ($this->adminToken == null) {
@@ -808,15 +810,323 @@ class ApiSdk
         return $eventResult;
     }
 
+
+    ///////////////////////////////////////////////////// END EVENT TRIGGER APIs /////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////// BEGIN MARKETPLACE APIs /////////////////////////////////////////////////////
+
     public function getMarketplaceInfo()
     {
         if ($this->adminToken == null) {
             $this->adminToken = getAdminToken();
         }
         $url           = $this->baseUrl . '/api/v2/marketplaces/';
-        $eventTriggers = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
+        $info = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
+        return $info;
+    }
+
+    public function updateMarketplaceInfo($data)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url           = $this->baseUrl . '/api/v2/marketplaces/';
+        $eventTriggers = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
         return $eventTriggers;
     }
+
+    ///////////////////////////////////////////////////// END MARKETPLACE APIs /////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////// BEGIN EMAIL APIs /////////////////////////////////////////////////////
+
+    public function sendEmail($to, $html, $subject)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url  = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/emails/';
+        $data = [
+            'From'    => 'admin@arcadier.com',
+            'To'      => $to,
+            'Body'    => $html,
+            'Subject' => $subject,
+        ];
+        $emailResult = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
+        return $emailResult;
+    }
+
+    public function sendEmailAfterGeneratingInvoice($invoiceNo)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url  = $this->baseUrl . '/api/v2/emails/';
+        $data = [
+            'Type'    => 'invoice',
+            'InvoiceNo'      => $invoiceNo
+        ];
+        $emailResult = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
+        return $emailResult;
+    }
+
+    ///////////////////////////////////////////////////// END EMAIL APIs /////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////// BEGIN CUSTOM FIELD APIs /////////////////////////////////////////////////////
+
+    public function createCustomField($data)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url  = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/custom-field-definitions/';
+        $createdCustomField = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
+        return $createdCustomField;
+    }
+
+    public function getCustomFields()
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url  = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/custom-field-definitions/';
+        $customFields = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
+        return $customFields;
+    }
+
+    public function deleteCustomField($code)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url  = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/custom-field-definitions/' . $code;
+        $deletedCustomField = $this->callAPI("DELETE", $this->adminToken['access_token'], $url, null);
+        return $deletedCustomField;
+    }
+
+    public function updateCustomField($code, $data)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url  = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/custom-field-definitions/' . $code;
+        $updatedCustomField = $this->callAPI("PUT", $this->adminToken['access_token'], $url, $data);
+        return $updatedCustomField;
+    }
+
+    public function getPluginCustomFields($packageId)
+    {
+        $url  = $this->baseUrl . '/api/v2/packages/' . $packageId . '/custom-field-definitions/';
+        $customFields = $this->callAPI("GET", null, $url, null);
+        return $customFields;
+    }
+
+    ///////////////////////////////////////////////////// END CUSTOM FIELD APIs /////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////// BEGIN PAYMENT APIs /////////////////////////////////////////////////////
+
+    public function getPaymentGateways()
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url  = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/payment-gateways/';
+        $paymentGateways = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
+        return $paymentGateways;
+    }
+
+    public function showPaymentAcceptanceMethods($merchantId)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url  = $this->baseUrl . '/api/v2/merchants/' . $merchantId . '/payment-acceptance-methods/';
+        $paymentAcceptanceMethods = $this->callAPI("GET", $this->adminToken['access_token'], $url, null);
+        return $paymentAcceptanceMethods;
+    }
+
+    public function createPaymentGateway($data)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url  = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/payment-gateways/';
+        $createdPaymentGateway = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
+        return $createdPaymentGateway;
+    }
+
+    public function linkPaymentGateway($merchantId, $data)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url  = $this->baseUrl . '/api/v2/merchants/' . $merchantId . '/payment-acceptance-methods/';
+        $response = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
+        return $response;
+    }
+
+    public function deletePaymentGateway($gatewayId)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url  = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/payment-gateways/' . $gatewayId;
+        $deletedPaymentGateway = $this->callAPI("DELETE", $this->adminToken['access_token'], $url, null);
+        return $deletedPaymentGateway;
+    }
+
+    public function deletePaymentAcceptanceMethods($merchantId, $methodId)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url  = $this->baseUrl . '/api/v2/merchants/' . $merchantId . '/payment-acceptance-methods/' . $methodId;
+        $deletedPaymentMethod = $this->callAPI("DELETE", $this->adminToken['access_token'], $url, null);
+        return $deletedPaymentMethod;
+    }
+
+    public function updatePaymentMethod($methodCode, $data)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url  = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId']  . '/payment-gateways/' . $methodCode;
+        $updatedPaymentMethod = $this->callAPI("PUT", $this->adminToken['access_token'], $url, $data);
+        return $updatedPaymentMethod;
+    }
+
+    ///////////////////////////////////////////////////// END PAYMENT APIs /////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////// BEGIN STATIC APIs /////////////////////////////////////////////////////
+
+    public function getFulfilmentStatuses()
+    {
+        $url  = $this->baseUrl . '/api/v2/static/fulfilment-statuses';
+        $fulfilmentStatuses = $this->callAPI("GET", null, $url, null);
+        return $fulfilmentStatuses;
+    }
+
+    public function getCurrencies()
+    {
+        $url  = $this->baseUrl . '/api/v2/static/currencies';
+        $currencies = $this->callAPI("GET", null, $url, null);
+        return $currencies;
+    }
+
+    public function getCountries()
+    {
+        $url  = $this->baseUrl . '/api/v2/static/countries';
+        $countries = $this->callAPI("GET", null, $url, null);
+        return $countries;
+    }
+
+    public function getOrderStatuses()
+    {
+        $url  = $this->baseUrl . '/api/v2/static/order-statuses';
+        $orderStatuses = $this->callAPI("GET", null, $url, null);
+        return $orderStatuses;
+    }
+
+    public function getPaymentStatuses()
+    {
+        $url  = $this->baseUrl . '/api/v2/static/payment-statuses';
+        $paymentStatuses = $this->callAPI("GET", null, $url, null);
+        return $paymentStatuses;
+    }
+
+    public function getTimezones()
+    {
+        $url  = $this->baseUrl . '/api/v2/static/timezones';
+        $timezones = $this->callAPI("GET", null, $url, null);
+        return $timezones;
+    }
+
+    ///////////////////////////////////////////////////// END STATIC APIs /////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////// BEGIN MEDIA APIs /////////////////////////////////////////////////////
+
+    public function getUserMedia($userId)
+    {
+        $url  = $this->baseUrl . '/api/v2/users/' . $userId . '/media';
+        $userMedia = $this->callAPI("GET", null, $url, null);
+        return $userMedia;
+    }
+    //dont test this yet
+    public function updateUserMedia($userId)
+    {
+        $url  = $this->baseUrl . '/api/v2/users/' . $userId . '/media?purpose';
+        $userMedia = $this->callAPI("POST", null, $url, null);
+        return $userMedia;
+    }
+
+    ///////////////////////////////////////////////////// END MEDIA APIs /////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////// BEGIN PAGES APIs /////////////////////////////////////////////////////
+
+    public function getContentPages()
+    {
+        $url  = $this->baseUrl . '/api/v2/content-pages';
+        $pages = $this->callAPI("GET", null, $url, null);
+        return $pages;
+    }
+
+    public function getPageContent($pageId)
+    {
+        $url  = $this->baseUrl . '/api/v2/content-pages/' . $pageId;
+        $content = $this->callAPI("GET", null, $url, null);
+        return $content;
+    }
+
+    public function createContentPage($data)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url  = $this->baseUrl . '/api/v2/content-pages';
+        $createdPageContent = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
+        return $createdPageContent;
+    }
+
+    public function editContentPage($pageId, $data)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url  = $this->baseUrl . '/api/v2/content-pages/' . $pageId;
+        $editedPageContent = $this->callAPI("PUT", $this->adminToken['access_token'], $url, $data);
+        return $editedPageContent;
+    }
+
+    public function deleteContentPage($pageId)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url  = $this->baseUrl . '/api/v2/content-pages/' . $pageId;
+        $deletedPageContent = $this->callAPI("DELETE", $this->adminToken['access_token'], $url, null);
+        return $deletedPageContent;
+    }
+
+    ///////////////////////////////////////////////////// END PAGES APIs /////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////// BEGIN PANELS APIs /////////////////////////////////////////////////////
+
+    public function getAllPanels()
+    {
+        $url  = $this->baseUrl . '/api/v2/panels?type=slider';
+        $panels = $this->callAPI("GET", null, $url, null);
+        return $panels;
+    }
+
+    public function getPanelsById($panelId)
+    {
+        $url  = $this->baseUrl . '/api/v2/panels/' . $panelId;
+        $panel = $this->callAPI("GET", null, $url, null);
+        return $panel;
+    }
+
+    ///////////////////////////////////////////////////// END PANELS APIs /////////////////////////////////////////////////////
+
+
 
     public function disableEdms()
     {
@@ -860,22 +1170,6 @@ class ApiSdk
         $url           = $this->baseUrl . '/api/v2/marketplaces/';
         $eventTriggers = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
         return $eventTriggers;
-    }
-
-    public function sendEmail($to, $html, $subject)
-    {
-        if ($this->adminToken == null) {
-            $this->adminToken = getAdminToken();
-        }
-        $url  = $this->baseUrl . '/api/v2/admins/' . $this->adminToken['UserId'] . '/emails/';
-        $data = [
-            'From'    => 'admin@arcadier.com',
-            'To'      => $to,
-            'Body'    => $html,
-            'Subject' => $subject,
-        ];
-        $emailResult = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
-        return $emailResult;
     }
 
     public function ssoToken($exUserId, $userEmail)
