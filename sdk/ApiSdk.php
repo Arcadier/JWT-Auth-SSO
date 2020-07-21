@@ -1,6 +1,6 @@
 <?php
-require_once '../admin/admin_token.php';
-
+include '../admin/admintoken.php'; // this is for arcadier marketplace
+include 'admin_token.php'; // this is for external servers
 class ApiSdk
 {
     private $adminToken = '';
@@ -625,7 +625,6 @@ class ApiSdk
         return $response;
     }
 
-    //merchant or admin token?
     public function updateMarketplaceTransaction($invoiceId, $data)
     {
         if ($this->adminToken == null) {
@@ -640,7 +639,6 @@ class ApiSdk
 
     ///////////////////////////////////////////////////// BEGIN SHIPPING APIs /////////////////////////////////////////////////////
 
-    //admin or merchant token?
     public function getMerchantShippingMethods($merchantId)
     {
         if ($this->adminToken == null) {
@@ -760,7 +758,6 @@ class ApiSdk
         return $sortedCategories;
     }
 
-    //does it need id in data?
     public function updateCategory($categoryId, $data)
     {
         if ($this->adminToken == null) {
@@ -1064,6 +1061,7 @@ class ApiSdk
 
     ///////////////////////////////////////////////////// BEGIN MEDIA APIs /////////////////////////////////////////////////////
 
+    //dont test this yet
     public function getUserMedia($userId)
     {
         $url  = $this->baseUrl . '/api/v2/users/' . $userId . '/media';

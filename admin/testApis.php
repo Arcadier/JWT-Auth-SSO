@@ -10,17 +10,17 @@ $buyerId = "c33cfb0f-b665-42e9-bb04-84c723e7e65a";
 $merchantId = $content['merchantId'];
 //"d7b4a56c-93c6-4c24-b2d0-f730061f7744";
 //Test User auth
-$buyerUsername = "testuser19@gmail.com";
-$buyerPassword = "testuser19pw";
+$buyerUsername = "testuser20@gmail.com";
+$buyerPassword = "testuser20pw";
 //Real User auth
 /* $buyerUsername = "bryanchee@arcadier.com";
 $buyerPassword = "bryanchee"; */
 //Upgrade user role not working
-/* $merchantUsername = "testmerchant19@gmail.com";
-$merchantPassword = "testmerchant19pw"; */
+/* $merchantUsername = "testmerchant20@gmail.com";
+$merchantPassword = "testmerchant20pw"; */
 $testInputs = [
     //User test inputs
-    /* "registeruser:$buyerUsername:$buyerPassword",
+    "registeruser:$buyerUsername:$buyerPassword",
     //"registeruser:$merchantUsername:$merchantPassword",
     "getusers",
     "getmerchants",
@@ -43,7 +43,7 @@ $testInputs = [
     "tagitem",
     "gettags",
     "deletetags",
-    "deleteitem", */
+    "deleteitem",
     // Custom Table test inputs
     "newrowentry",
     "getcustomtable",
@@ -51,7 +51,7 @@ $testInputs = [
     "searchcustomtable",
     "deleterowentry",
     // Shipping Method test inputs
-    /* "createshippingmethod",
+    "createshippingmethod",
     "getshippingmethods",
     "getdeliveryrates",
     "updateshippingmethod",
@@ -113,7 +113,7 @@ $testInputs = [
     "getpanels",
     "getpanelbyid",
     "deletecategory:second",
-    "deleteuser", */
+    "deleteuser",
     //"customiseURL",
 ];
 $testCases = [
