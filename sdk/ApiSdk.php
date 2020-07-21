@@ -800,6 +800,17 @@ class ApiSdk
         return $eventResult;
     }
 
+    //untested
+    public function updateEventTrigger($eventTriggerId, $data)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url  = $this->baseUrl . '/api/v2/event-triggers/' . $eventTriggerId;
+        $eventResult = $this->callAPI("PUT", $this->adminToken['access_token'], $url, $data);
+        return $eventResult;
+    }
+
     public function removeEventTrigger($eventId)
     {
         if ($this->adminToken == null) {
@@ -834,7 +845,16 @@ class ApiSdk
         $info = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
         return $info;
     }
-
+    //untested
+    public function customiseURL($data)
+    {
+        if ($this->adminToken == null) {
+            $this->adminToken = getAdminToken();
+        }
+        $url           = $this->baseUrl . '/api/v2/rewrite-rules/';
+        $response = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
+        return $response;
+    }
     ///////////////////////////////////////////////////// END MARKETPLACE APIs /////////////////////////////////////////////////////
 
     ///////////////////////////////////////////////////// BEGIN EMAIL APIs /////////////////////////////////////////////////////

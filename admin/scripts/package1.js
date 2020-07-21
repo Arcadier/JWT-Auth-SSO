@@ -21,7 +21,6 @@ function testApis() {
     event.preventDefault();
     var formValues = getFormValues($(this))
     var data = {
-      "packageId": formValues.packageId,
       "merchantId": formValues.merchantId
     };
     $("#json-response-display").html('<span class="simplePlugin-number">Loading....</span>');

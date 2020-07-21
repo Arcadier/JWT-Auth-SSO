@@ -5,7 +5,7 @@ $sdk = new ApiSdk();
 $contentBodyJson = file_get_contents('php://input');
 $content = json_decode($contentBodyJson, true);
 
-$packageId = $content['packageId'];
+$packageId = getPackageID();
 $buyerId = "c33cfb0f-b665-42e9-bb04-84c723e7e65a";
 $merchantId = $content['merchantId'];
 //"d7b4a56c-93c6-4c24-b2d0-f730061f7744";
@@ -20,7 +20,7 @@ $buyerPassword = "bryanchee"; */
 $merchantPassword = "testmerchant19pw"; */
 $testInputs = [
     //User test inputs
-    "registeruser:$buyerUsername:$buyerPassword",
+    /* "registeruser:$buyerUsername:$buyerPassword",
     //"registeruser:$merchantUsername:$merchantPassword",
     "getusers",
     "getmerchants",
@@ -43,7 +43,7 @@ $testInputs = [
     "tagitem",
     "gettags",
     "deletetags",
-    "deleteitem",
+    "deleteitem", */
     // Custom Table test inputs
     "newrowentry",
     "getcustomtable",
@@ -51,7 +51,7 @@ $testInputs = [
     "searchcustomtable",
     "deleterowentry",
     // Shipping Method test inputs
-    "createshippingmethod",
+    /* "createshippingmethod",
     "getshippingmethods",
     "getdeliveryrates",
     "updateshippingmethod",
@@ -94,6 +94,7 @@ $testInputs = [
     "getcustomfields",
     "updatemarketplaceinformation",
     "updatecustomfield",
+    "getcustomfieldplugin",
     "deletecustomfield",
     //Static test inputs
     "getfulfilmentstatuses",
@@ -112,7 +113,8 @@ $testInputs = [
     "getpanels",
     "getpanelbyid",
     "deletecategory:second",
-    "deleteuser",
+    "deleteuser", */
+    //"customiseURL",
 ];
 $testCases = [
     [
@@ -537,6 +539,23 @@ function testOneTestCase($inputString)
 
             return deleteRecord("Delete Category", "Category", $response[0], $deleteCategoryId, "ID");
             //Marketplace test cases
+            /* case "customiseURL":
+            $sdk->customiseURL(
+                [
+                    "Key" => "/customiseUrlTest",
+                    "Value" => "/user/plugins/$packageId/customiseUrlTest.php",
+                ]
+            );
+            $response = $sdk->callAPI("GET", null, getMarketplaceBaseUrl() . "/api/v2/customiseUrlTest", null);
+            $result = [];
+            if ($response == "Successfully called customiseUrlTest") {
+                $result["testSuccessStatus"] = "Passed";
+                $result["Message"] = "Successfully called customiseUrlTest";
+            } else {
+                $result["testSuccessStatus"] = "Failed";
+            }
+            $result["TestName"] = "Customise Url";
+            return $result; */
         case "updatemarketplaceinformation":
             $marketplaceId = ($sdk->getMarketplaceInfo())['ID'];
             $response = $sdk->updateMarketplaceInfo(
@@ -598,7 +617,7 @@ function testOneTestCase($inputString)
             return editRecord("Update Custom Field", "Custom Field", $response, "Name", "Previously owned");
         case "getcustomfieldplugin":
             $response = $sdk->getPluginCustomFields($packageId);
-
+            return createRecord("Get Custom Fields of Plugin", $response[0], "Custom Fields successfully retrieved", "Code");
         case "deletecustomfield":
             $response = $sdk->deleteCustomField($customFieldCode);
             return deleteRecord("Delete Custom Field", "Custom Field", $response, $customFieldCode, "Code");
@@ -822,4 +841,20 @@ function checkArray($testName, $response, $message)
     }
     $response["TestName"] = $testName;
     return $response;
+}
+
+function getMarketplaceBaseUrl()
+{
+    $marketplace = $_COOKIE["marketplace"];
+    $protocol    = $_COOKIE["protocol"];
+
+    $baseUrl = $protocol . '://' . $marketplace;
+    return $baseUrl;
+}
+
+function getPackageID()
+{
+    $requestUri = "$_SERVER[REQUEST_URI]";
+    preg_match('/([a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12})/', $requestUri, $matches, 0);
+    return $matches[0];
 }
