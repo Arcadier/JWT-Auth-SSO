@@ -19,14 +19,12 @@ $(document).ready(function () {
 function testApis() {
   $("#api-form").on("submit", function (event) {
     event.preventDefault();
-
-    //get array of values from form and convert to object
-
-    const formValues = getFormValues($(this))
+    var formValues = getFormValues($(this))
     var data = {
-      "apiType": formValues.api
+      "packageId": formValues.packageId,
+      "merchantId": formValues.merchantId
     };
-
+    $("#json-response-display").html('<span class="simplePlugin-number">Loading....</span>');
     settings.data = JSON.stringify(data)
     settings.success = function (response) {
       console.log(response)
@@ -63,6 +61,11 @@ function syntaxHighlight(json) {
         cls = 'simplePlugin-key';
       } else {
         cls = 'simplePlugin-string';
+        if (match == `"Failed"`) {
+          cls = 'simplePlugin-null';
+        } else if (match == `"Passed"`) {
+          cls = 'simplePlugin-number';
+        }
       }
     } else if (/true|false/.test(match)) {
       cls = 'simplePlugin-boolean';

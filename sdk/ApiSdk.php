@@ -468,7 +468,7 @@ class ApiSdk
         return $orderHistory;
     }
 
-    public function getOrderInfoByInvoiceId($invoiceId, $merchantId)
+    public function getOrderInfoByInvoiceId($merchantId, $invoiceId)
     {
         if ($this->adminToken == null) {
             $this->adminToken = getAdminToken();
@@ -478,7 +478,7 @@ class ApiSdk
         return $orderInfo;
     }
 
-    public function editOrder($orderId, $merchantId, $data)
+    public function editOrder($merchantId, $orderId, $data)
     {
         if ($this->adminToken == null) {
             $this->adminToken = getAdminToken();
@@ -831,8 +831,8 @@ class ApiSdk
             $this->adminToken = getAdminToken();
         }
         $url           = $this->baseUrl . '/api/v2/marketplaces/';
-        $eventTriggers = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
-        return $eventTriggers;
+        $info = $this->callAPI("POST", $this->adminToken['access_token'], $url, $data);
+        return $info;
     }
 
     ///////////////////////////////////////////////////// END MARKETPLACE APIs /////////////////////////////////////////////////////
