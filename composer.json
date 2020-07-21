@@ -1,9 +1,7 @@
 {
     "name": "arcadier/apisdk",
     "description": "API SDK in PHP",
-    "require": {
-        "php": "^7.4.8"
-    },
+    "require": {},
     "repositories": [
         {
             "type": "composer",
