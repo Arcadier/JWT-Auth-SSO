@@ -1,0 +1,14 @@
+{
+    "name": "arcadier",
+    "description": "API SDK in PHP",
+    "require": {},
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://repo.packagist.com/bryanarcadier/"
+        },
+        {
+            "packagist.org": false
+        }
+    ]
+}
