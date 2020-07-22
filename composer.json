@@ -1,5 +1,5 @@
 {
-    "name": "arcadier",
+    "name": "bryanarcadier/apisdk",
     "description": "API SDK in PHP",
     "require": {},
     "repositories": [
