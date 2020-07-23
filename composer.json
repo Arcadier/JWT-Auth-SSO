@@ -1,7 +1,9 @@
 {
     "name": "bryanarcadier/apisdk",
     "description": "API SDK in PHP",
-    "require": {},
+    "require": {
+        "php": "^7.0.0"
+    },
     "repositories": [
         {
             "type": "composer",
