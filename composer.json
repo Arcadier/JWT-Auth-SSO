@@ -1,9 +1,9 @@
 {
-    "name": "bryanarcadier/apisdk",
+    "name": "bryancghnus/JWT-Auth-SSO",
     "description": "API SDK in PHP",
     "require": {
         "php": "^7.0.0",
-        "bryancghnus/JWT-Auth-SSO": "dev-master"
+        "arcadier/JWT-Auth-SSO": "dev-master"
     },
     "repositories": [
         {
