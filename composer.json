@@ -9,7 +9,7 @@
         {
             "type": "package",
             "package": {
-                "name": "bryancghnus/JWT-Auth-SSO",
+                "name": "Arcadier/JWT-Auth-SSO",
                 "version": "dev-master",
                 "source": {
                     "url": "https://github.com/bryancghnus/JWT-Auth-SSO.git",
