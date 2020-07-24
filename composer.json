@@ -2,12 +2,26 @@
     "name": "bryancghnus/JWT-Auth-SSO",
     "description": "API SDK in PHP",
     "require": {
-        "php": "^7.0.0"
+        "php": "^7.0.0",
+        "Arcadier/JWT-Auth-SSO": "dev-master"
     },
     "repositories": [
         {
-            "type": "vcs",
-            "url": "https://github.com/bryancghnus/JWT-Auth-SSO.git"
-        }
+            "type": "package",
+            "package": {
+                "name": "bryancghnus/JWT-Auth-SSO",
+                "version": "dev-master",
+                "source": {
+                    "url": "https://github.com/bryancghnus/JWT-Auth-SSO.git",
+                    "type": "git",
+                    "reference": "master"
+                },
+                "autoload": {
+                    "classmap": [
+                        ""
+                    ]
+                }
+            }
+        },
     ]
 }
