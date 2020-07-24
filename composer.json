@@ -6,11 +6,8 @@
     },
     "repositories": [
         {
-            "type": "composer",
-            "url": "https://repo.packagist.com/bryanarcadier/"
-        },
-        {
-            "packagist.org": false
+            "type": "vcs",
+            "url": "https://github.com/bryancghnus/JWT-Auth-SSO.git"
         }
     ]
 }
