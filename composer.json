@@ -3,7 +3,7 @@
     "description": "API SDK in PHP",
     "require": {
         "php": "^7.0.0",
-        "bryanarcadier/apisdk": "dev-master"
+        "bryancghnus/JWT-Auth-SSO": "dev-master"
     },
     "repositories": [
         {
