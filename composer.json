@@ -3,7 +3,7 @@
     "description": "API SDK in PHP",
     "require": {
         "php": "^7.0.0",
-        "arcadier/JWT-Auth-SSO": "dev-master"
+        "Arcadier/JWT-Auth-SSO": "dev-master"
     },
     "repositories": [
         {
